@@ -7,6 +7,10 @@ class GameOfLife::Cell
     self.x, self.y, self.status = x, y, status
   end
 
+  def neighbours
+    []
+  end
+
   def live!
     self.status = :live
   end

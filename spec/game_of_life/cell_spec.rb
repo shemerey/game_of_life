@@ -28,6 +28,19 @@ describe GameOfLife::Cell do
   end
 
 
+  context 'neighbours' do
+    xit 'should have neighbors' do
+      subject.neighbours.should be_instance_of(Array)
+      subject.neighbours.should_not be_empty
+    end
+
+    xit 'should have cells as a neighbors' do
+      subject.neighbours.map(&:class).all?{|cell_class| cell_class == GameOfLife::Cell }.should be_true
+      subject.neighbours.each do |neighbour|
+        neighbour.should be_instance_of(described_class)
+      end
+    end
+  end
 
   it 'Any live cell with fewer than two live neighbours dies, as if caused by under-population.'
   it 'Any live cell with two or three live neighbours lives on to the next generation.'
