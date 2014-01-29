@@ -130,21 +130,38 @@ describe GameOfLife::Cell do
     end
 
     it 'Any live cell with two or three live neighbours lives on to the next generation.' do
-      cell = described_class.find(2, 2, board)
+      cell = described_class.find(2, 2, board).live!
       described_class.find(1, 1, board).live!
       described_class.find(2, 1, board).live!
       cell.should be_will_live
       cell.should_not be_will_die
+    end
+
+    it 'Any dead cell with two live neighbours stays dead on next generation.' do
+      cell = described_class.find(2, 2, board).kill!
+      described_class.find(1, 1, board).live!
+      described_class.find(2, 1, board).live!
+      cell.should_not be_will_live
+      cell.should be_will_die
     end
 
     it 'Any live cell with more than three live neighbours dies, as if by overcrowding.' do
-      cell = described_class.find(2, 2, board)
+      cell = described_class.find(2, 2, board).live!
       described_class.find(1, 1, board).live!
       described_class.find(2, 1, board).live!
+      described_class.find(3, 1, board).live!
+      described_class.find(3, 2, board).live!
+      cell.should_not be_will_live
+      cell.should be_will_die
+    end
+
+    it 'Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.' do
+      cell = described_class.find(2, 2, board).kill!
+      described_class.find(1, 1, board).live!
+      described_class.find(2, 1, board).live!
+      described_class.find(3, 1, board).live!
       cell.should be_will_live
       cell.should_not be_will_die
     end
-    it 'Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.'
   end
-
 end
