@@ -3,8 +3,8 @@ require 'all'
 class GameOfLife::Cell
   attr_accessor :x, :y, :status
 
-  def initialize(x, y, status = :dead)
-    self.x, self.y, self.status = x, y, status
+  def initialize(x, y, board)
+    self.status, self.x, self.y, @board = :dead, x, y, board
   end
 
   def neighbours
@@ -34,59 +34,43 @@ class GameOfLife::Cell
   end
 
   private
-    def top_side_neighbours
-      top_x = (x-1)..(x+1) # top x
-      top_y = [y + 1]
-      top = []
+    def board
+      @board
+    end
 
-      top_x.each do |x|
-        top_y.each do |y|
-          top << self.class.new(x, y)
+    def get_neighbourse_for_range(x_range, y_range)
+      collection = []
+      x_range.each do |x|
+        y_range.each do |y|
+          if (0..board.x).include?(x) && (0..board.y).include?(y)
+            collection << self.class.new(x, y, board)
+          end
         end
       end
+      collection
+    end
 
-      top
+    def top_side_neighbours
+      x_range = (x-1)..(x+1) # top x
+      y_range = [y + 1]      # top y
+      get_neighbourse_for_range(x_range, y_range)
     end
 
     def left_side_neighbours
-      left_x = [x - 1]
-      left_y = (y-1)..(y+1) # left y
-      left = []
-
-      left_x.each do |x|
-        left_y.each do |y|
-          left << self.class.new(x, y)
-        end
-      end
-
-      left
+      x_range = [x - 1]      # left x
+      y_range = (y-1)..(y+1) # left y
+      get_neighbourse_for_range(x_range, y_range)
     end
 
     def right_side_neighbours
-      right_x = [x + 1]
-      right_y = (y-1)..(y+1) # right y
-      right = []
-
-      right_x.each do |x|
-        right_y.each do |y|
-          right << self.class.new(x, y)
-        end
-      end
-
-      right
+      x_range = [x + 1]      # right x
+      y_range = (y-1)..(y+1) # right y
+      get_neighbourse_for_range(x_range, y_range)
     end
 
     def bottom_side_neighbours
-      bottom_x = (x-1)..(x+1) # bottom x
-      bottom_y = [y - 1]
-      bottom = []
-
-      bottom_x.each do |x|
-        bottom_y.each do |y|
-          bottom << self.class.new(x, y)
-        end
-      end
-
-      bottom
+      x_range = (x-1)..(x+1) # bottom x
+      y_range = [y - 1]      # bottom y
+      get_neighbourse_for_range(x_range, y_range)
     end
 end

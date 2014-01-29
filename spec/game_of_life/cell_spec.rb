@@ -1,14 +1,20 @@
 require 'spec_helper'
 
 describe GameOfLife::Cell do
-
-  subject { described_class.new(double, double) }
+  # [0,0], [1,0], [2,0], [3,0], [4,0]
+  # [0,1], [1,1], [2,1], [3,1], [4,1]
+  # [0,2], [1,2], [2,2], [3,2], [4,2]
+  # [0,3], [1,3], [2,3], [3,3], [4,3]
+  # [0,4], [1,4], [2,4], [3,4], [4,4]
+  # [0,5], [1,5], [2,5], [3,5], [4,5]
+  let(:board) { GameOfLife::Board.new(5, 6) }
+  subject { described_class.new(double, double, board) }
 
   it { should be_dead }
   it { should_not be_live }
 
   it 'should know about position on a board' do
-    cell = described_class.new(x = 10, y = 20)
+    cell = described_class.new(x = 10, y = 20, board)
     cell.x.should == 10
     cell.y.should == 20
   end
@@ -28,33 +34,79 @@ describe GameOfLife::Cell do
   end
 
   it 'should be eql cells if x and y is the same' do
-    described_class.new(1,2).should eq(described_class.new(1,2))
+    described_class.new(1,2, board).should eq(described_class.new(1,2, board))
   end
 
 
   context 'neighbours' do
-    #
-    # [0,0], [1,0], [2,0], [3,0], [4,0]
-    # [0,1], [1,1], [2,1], [3,1], [4,1]
-    # [0,2], [1,2], [xxx], [3,2], [4,2]
-    # [0,3], [1,3], [2,3], [3,3], [4,3]
-    # [0,4], [1,4], [2,4], [3,4], [4,4]
-    # [0,5], [1,5], [2,5], [3,5], [4,5]
-    #
-    # [2,2] =>  [1,1], [2,1], [3,1], [3,2], [3,3], [2,3], [1,3], [1,2]
-    it 'should have 8 neighbours' do
-      described_class.new(2,2).neighbours.should have(8).items
+    context '#cell with all neighbours' do
+      let(:cell) { described_class.new(2,2, board) }
+
+      # [0,0], [1,0], [2,0], [3,0], [4,0]
+      # [0,1], [1,1], [2,1], [3,1], [4,1]
+      # [0,2], [1,2], [xxx], [3,2], [4,2]
+      # [0,3], [1,3], [2,3], [3,3], [4,3]
+      # [0,4], [1,4], [2,4], [3,4], [4,4]
+      # [0,5], [1,5], [2,5], [3,5], [4,5]
+      it 'should have 8 neighbours' do
+        cell.neighbours.should have(8).items
+      end
+
+      it 'should have cells as a neighbors' do
+        cell.neighbours.each do |neighbour|
+          neighbour.should be_instance_of(described_class)
+        end
+      end
     end
 
-    it 'should have neighbors' do
-      described_class.new(2,2).neighbours.should be_instance_of(Array)
-      described_class.new(2,2).neighbours.should_not be_empty
+    context '#corner cells should have 3 neighbours' do
+      let(:left_top) { described_class.new(0,0, board) }
+      let(:right_top) { described_class.new(4,0, board) }
+      let(:right_bottom) { described_class.new(4,5, board) }
+      let(:left_bottom) { described_class.new(0,5, board) }
+
+      # [xxx], [1,0], [2,0], [3,0], [xxx]
+      # [0,1], [1,1], [2,1], [3,1], [4,1]
+      # [0,2], [1,2], [2,2], [3,2], [4,2]
+      # [0,3], [1,3], [2,3], [3,3], [4,3]
+      # [0,4], [1,4], [2,4], [3,4], [4,4]
+      # [xxx], [1,5], [2,5], [3,5], [xxx]
+      let(:corner_cels) do
+        [
+          left_top,
+          right_top,
+          right_bottom,
+          left_bottom
+        ]
+      end
+
+      it 'all corner cells should have 3 neighbors' do
+        corner_cels.each do |cell|
+          cell.neighbours.should have(3).items
+        end
+      end
     end
 
-    xit 'should have cells as a neighbors' do
-      subject.neighbours.map(&:class).all?{|cell_class| cell_class == GameOfLife::Cell }.should be_true
-      subject.neighbours.each do |neighbour|
-        neighbour.should be_instance_of(described_class)
+    context '#cell with all neighbours' do
+      let(:cell) { described_class.new(0,0, board) }
+
+      #
+      # [xxx], [1,0], [2,0], [3,0], [4,0]
+      # [0,1], [1,1], [2,1], [3,1], [4,1]
+      # [0,2], [1,2], [2,2], [3,2], [4,2]
+      # [0,3], [1,3], [2,3], [3,3], [4,3]
+      # [0,4], [1,4], [2,4], [3,4], [4,4]
+      # [0,5], [1,5], [2,5], [3,5], [4,5]
+      #
+      # [2,2] =>  [1,1], [2,1], [3,1], [3,2], [3,3], [2,3], [1,3], [1,2]
+      it 'should have 8 neighbours' do
+        cell.neighbours.should have(3).items
+      end
+
+      it 'should have cells as a neighbors' do
+        cell.neighbours.each do |neighbour|
+          neighbour.should be_instance_of(described_class)
+        end
       end
     end
   end
