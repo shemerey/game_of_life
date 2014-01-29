@@ -27,6 +27,10 @@ describe GameOfLife::Cell do
     }.to change{ subject.live? }.from(true).to(false)
   end
 
+  it 'should be eql cells if x and y is the same' do
+    described_class.new(1,2).should eq(described_class.new(1,2))
+  end
+
 
   context 'neighbours' do
     #
@@ -43,8 +47,8 @@ describe GameOfLife::Cell do
     end
 
     it 'should have neighbors' do
-      subject.neighbours.should be_instance_of(Array)
-      subject.neighbours.should_not be_empty
+      described_class.new(2,2).neighbours.should be_instance_of(Array)
+      described_class.new(2,2).neighbours.should_not be_empty
     end
 
     xit 'should have cells as a neighbors' do
