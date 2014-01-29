@@ -1,45 +1,61 @@
 # vim:fen:fdm=marker:fmr={{{,}}}:fdl=0:fdc=1:ts=2:sw=2:sts=2:nu
 require 'spec_helper'
 
+# [0,0], [1,0], [2,0], [3,0], [4,0]
+# [0,1], [1,1], [2,1], [3,1], [4,1]
+# [0,2], [1,2], [2,2], [3,2], [4,2]
+# [0,3], [1,3], [2,3], [3,3], [4,3]
+# [0,4], [1,4], [2,4], [3,4], [4,4]
+# [0,5], [1,5], [2,5], [3,5], [4,5]
 describe GameOfLife::Cell do
-  # [0,0], [1,0], [2,0], [3,0], [4,0]
-  # [0,1], [1,1], [2,1], [3,1], [4,1]
-  # [0,2], [1,2], [2,2], [3,2], [4,2]
-  # [0,3], [1,3], [2,3], [3,3], [4,3]
-  # [0,4], [1,4], [2,4], [3,4], [4,4]
-  # [0,5], [1,5], [2,5], [3,5], [4,5]
   let(:board) { GameOfLife::Board.new(5, 6) }
   subject { described_class.find(2, 2, board) }
 
   it { should be_dead }
   it { should_not be_live }
 
-  it 'should know about position on a board' do
+  it 'should know about position on a board' do #{{{
     cell = described_class.find(x = 10, y = 20, board)
     cell.x.should == 10
     cell.y.should == 20
-  end
+  end #}}}
 
-  it 'become a dead cell if we kill it' do
+  it 'become a dead cell if we kill it' do #{{{
     expect {
       subject.live!
     }.to change{ subject.live? }.from(false).to(true)
-  end
+  end #}}}
 
-  it 'become a dead cell if we kill it' do
+  it 'become a dead cell if we kill it' do #{{{
     subject.live!
 
     expect {
       subject.kill!
     }.to change{ subject.live? }.from(true).to(false)
-  end
+  end #}}}
 
-  it 'should be eql cells if x and y is the same' do
+  it 'should be eql cells if x and y is the same' do #{{{
     described_class.find(1,2, board).should eq(described_class.find(1,2, board))
-  end
+  end #}}}
 
+  context 'cell should be uniq object on a board' do #{{{
+    it 'should not be allowed to create object directly' do
+      expect {
+        described_class.new(1, 2, board)
+      }.to raise_error(NoMethodError)
+    end
 
-  context 'neighbours' do
+    it 'should return different object for same x, y, but different board object' do
+      new_board = GameOfLife::Board.new(20, 20)
+      described_class.find(1, 2, board).should_not === described_class.find(1, 2, new_board)
+    end
+
+    it 'should return same object for find by x, y, for same board object' do
+      described_class.find(1, 2, board).should === described_class.find(1, 2, board)
+    end
+  end #}}}
+
+  context 'neighbours' do #{{{
     context '#cell on edge line' do #{{{
       # [0,0], [1,0], [xxx], [3,0], [4,0]
       # [0,1], [1,1], [2,1], [3,1], [4,1]
@@ -105,24 +121,15 @@ describe GameOfLife::Cell do
         end
       end
     end #}}}
-  end
+  end #}}}
 
-  context 'cell should be uniq object on a board' do
-
-    it 'should not be allowed to create object directly' do
-      expect {
-        described_class.new(1, 2, board)
-      }.to raise_error(NoMethodError)
-    end
-  end
-
+  context 'Population controll' do #{{{
   # [0,0], [1,0], [2,0], [3,0], [4,0]
   # [0,1], [1,1], [2,1], [3,1], [4,1]
   # [0,2], [1,2], [xxx], [3,2], [4,2]
   # [0,3], [1,3], [2,3], [3,3], [4,3]
   # [0,4], [1,4], [2,4], [3,4], [4,4]
   # [0,5], [1,5], [2,5], [3,5], [4,5]
-  context 'Population controll' do
     it 'Any live cell with fewer than two live neighbours dies, as if caused by under-population.' do
       cell = described_class.find(2, 2, board).live!
       cell.should be_will_die
@@ -163,5 +170,5 @@ describe GameOfLife::Cell do
       cell.should be_will_live
       cell.should_not be_will_die
     end
-  end
+  end #}}}
 end

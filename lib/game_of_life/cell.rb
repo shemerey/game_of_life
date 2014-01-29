@@ -42,10 +42,6 @@ class GameOfLife::Cell
     :dead == self.status
   end
 
-  def ==(other)
-    x == other.x && y == other.y
-  end
-
   def will_live?
     live_neignbourse = neighbours.count(&:live?)
 
