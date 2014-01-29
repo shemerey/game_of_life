@@ -1,6 +1,13 @@
-require "game_of_life/version"
 require "all"
 
-module GameOfLife
+class GameOfLife
+  attr_reader :board
 
+  def initialize(*options)
+    @board = Board.new(20, 30)
+  end
+
+  def over?
+    false
+  end
 end
