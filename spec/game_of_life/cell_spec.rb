@@ -41,7 +41,6 @@ describe GameOfLife::Cell do
 
   context 'neighbours' do
     context '#cell on edge line' do #{{{
-
       # [0,0], [1,0], [xxx], [3,0], [4,0]
       # [0,1], [1,1], [2,1], [3,1], [4,1]
       # [0,2], [1,2], [2,2], [3,2], [4,2]
@@ -62,17 +61,16 @@ describe GameOfLife::Cell do
     end #}}}
 
     context '#corner cells should have 3 neighbours' do #{{{
-      let(:left_top) { described_class.new(0,0, board) }
-      let(:right_top) { described_class.new(4,0, board) }
-      let(:right_bottom) { described_class.new(4,5, board) }
-      let(:left_bottom) { described_class.new(0,5, board) }
-
       # [xxx], [1,0], [2,0], [3,0], [xxx]
       # [0,1], [1,1], [2,1], [3,1], [4,1]
       # [0,2], [1,2], [2,2], [3,2], [4,2]
       # [0,3], [1,3], [2,3], [3,3], [4,3]
       # [0,4], [1,4], [2,4], [3,4], [4,4]
       # [xxx], [1,5], [2,5], [3,5], [xxx]
+      let(:left_top) { described_class.new(0,0, board) }
+      let(:right_top) { described_class.new(4,0, board) }
+      let(:right_bottom) { described_class.new(4,5, board) }
+      let(:left_bottom) { described_class.new(0,5, board) }
       let(:corner_cels) do
         [
           left_top,
@@ -90,19 +88,15 @@ describe GameOfLife::Cell do
     end #}}}
 
     context '#cell with all neighbours' do #{{{
-      let(:cell) { described_class.new(0,0, board) }
-
-      #
-      # [xxx], [1,0], [2,0], [3,0], [4,0]
+      # [0,0], [1,0], [2,0], [3,0], [4,0]
       # [0,1], [1,1], [2,1], [3,1], [4,1]
-      # [0,2], [1,2], [2,2], [3,2], [4,2]
+      # [0,2], [1,2], [xxx], [3,2], [4,2]
       # [0,3], [1,3], [2,3], [3,3], [4,3]
       # [0,4], [1,4], [2,4], [3,4], [4,4]
       # [0,5], [1,5], [2,5], [3,5], [4,5]
-      #
-      # [2,2] =>  [1,1], [2,1], [3,1], [3,2], [3,3], [2,3], [1,3], [1,2]
+      let(:cell) { described_class.new(2, 2, board) }
       it 'should have 8 neighbours' do
-        cell.neighbours.should have(3).items
+        cell.neighbours.should have(8).items
       end
 
       it 'should have cells as a neighbors' do
