@@ -1,3 +1,4 @@
+# vim:fen:fdm=marker:fmr={{{,}}}:fdl=0:fdc=1:ts=2:sw=2:sts=2:nu
 require 'spec_helper'
 
 describe GameOfLife::Cell do
@@ -39,7 +40,7 @@ describe GameOfLife::Cell do
 
 
   context 'neighbours' do
-    context '#cell with all neighbours' do
+    context '#cell with all neighbours' do #{{{
       let(:cell) { described_class.new(2,2, board) }
 
       # [0,0], [1,0], [2,0], [3,0], [4,0]
@@ -57,9 +58,8 @@ describe GameOfLife::Cell do
           neighbour.should be_instance_of(described_class)
         end
       end
-    end
-
-    context '#corner cells should have 3 neighbours' do
+    end #}}}
+    context '#corner cells should have 3 neighbours' do #{{{
       let(:left_top) { described_class.new(0,0, board) }
       let(:right_top) { described_class.new(4,0, board) }
       let(:right_bottom) { described_class.new(4,5, board) }
@@ -85,9 +85,8 @@ describe GameOfLife::Cell do
           cell.neighbours.should have(3).items
         end
       end
-    end
-
-    context '#cell with all neighbours' do
+    end #}}}
+    context '#cell with all neighbours' do #{{{
       let(:cell) { described_class.new(0,0, board) }
 
       #
@@ -108,7 +107,7 @@ describe GameOfLife::Cell do
           neighbour.should be_instance_of(described_class)
         end
       end
-    end
+    end #}}}
   end
 
   it 'Any live cell with fewer than two live neighbours dies, as if caused by under-population.'
