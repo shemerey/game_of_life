@@ -3,9 +3,15 @@ require 'all'
 class GameOfLife::Cell
   attr_accessor :x, :y, :status
 
+  def self.find(x, y, board)
+    @collection ||= {}
+    @collection["#{x}_#{y}_#{board}"] ||= new(x, y, board)
+  end
+
   def initialize(x, y, board)
     self.status, self.x, self.y, @board = :dead, x, y, board
   end
+  private_class_method :new
 
   def neighbours
     (
@@ -38,6 +44,14 @@ class GameOfLife::Cell
     x == other.x && y == other.y
   end
 
+  def will_live?
+    (2..3).include?(neighbours.count {|neighbour| neighbour.live? })
+  end
+
+  def will_die?
+    neighbours.count {|neighbour| neighbour.live? } < 2
+  end
+
   private
     def board
       @board
@@ -48,7 +62,7 @@ class GameOfLife::Cell
       x_range.each do |x|
         y_range.each do |y|
           if (0..board.x).include?(x) && (0..board.y).include?(y)
-            collection << self.class.new(x, y, board)
+            collection << self.class.find(x, y, board)
           end
         end
       end

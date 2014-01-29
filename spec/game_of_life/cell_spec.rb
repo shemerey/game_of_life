@@ -9,13 +9,13 @@ describe GameOfLife::Cell do
   # [0,4], [1,4], [2,4], [3,4], [4,4]
   # [0,5], [1,5], [2,5], [3,5], [4,5]
   let(:board) { GameOfLife::Board.new(5, 6) }
-  subject { described_class.new(double, double, board) }
+  subject { described_class.find(2, 2, board) }
 
   it { should be_dead }
   it { should_not be_live }
 
   it 'should know about position on a board' do
-    cell = described_class.new(x = 10, y = 20, board)
+    cell = described_class.find(x = 10, y = 20, board)
     cell.x.should == 10
     cell.y.should == 20
   end
@@ -35,7 +35,7 @@ describe GameOfLife::Cell do
   end
 
   it 'should be eql cells if x and y is the same' do
-    described_class.new(1,2, board).should eq(described_class.new(1,2, board))
+    described_class.find(1,2, board).should eq(described_class.find(1,2, board))
   end
 
 
@@ -47,10 +47,10 @@ describe GameOfLife::Cell do
       # [xxx], [1,3], [2,3], [3,3], [xxx]
       # [0,4], [1,4], [2,4], [3,4], [4,4]
       # [0,5], [1,5], [xxx], [3,5], [4,5]
-      let(:top) { described_class.new(2,0, board) }
-      let(:right) { described_class.new(4,3, board) }
-      let(:bottom) { described_class.new(2,5, board) }
-      let(:left) { described_class.new(0,3, board) }
+      let(:top) { described_class.find(2,0, board) }
+      let(:right) { described_class.find(4,3, board) }
+      let(:bottom) { described_class.find(2,5, board) }
+      let(:left) { described_class.find(0,3, board) }
       let(:corner_cels) { [top, left, bottom, right] }
 
       it 'all edge line cells should have 5 neighbours' do
@@ -67,10 +67,10 @@ describe GameOfLife::Cell do
       # [0,3], [1,3], [2,3], [3,3], [4,3]
       # [0,4], [1,4], [2,4], [3,4], [4,4]
       # [xxx], [1,5], [2,5], [3,5], [xxx]
-      let(:left_top) { described_class.new(0,0, board) }
-      let(:right_top) { described_class.new(4,0, board) }
-      let(:right_bottom) { described_class.new(4,5, board) }
-      let(:left_bottom) { described_class.new(0,5, board) }
+      let(:left_top) { described_class.find(0,0, board) }
+      let(:right_top) { described_class.find(4,0, board) }
+      let(:right_bottom) { described_class.find(4,5, board) }
+      let(:left_bottom) { described_class.find(0,5, board) }
       let(:corner_cels) do
         [
           left_top,
@@ -94,7 +94,7 @@ describe GameOfLife::Cell do
       # [0,3], [1,3], [2,3], [3,3], [4,3]
       # [0,4], [1,4], [2,4], [3,4], [4,4]
       # [0,5], [1,5], [2,5], [3,5], [4,5]
-      let(:cell) { described_class.new(2, 2, board) }
+      let(:cell) { described_class.find(2, 2, board) }
       it 'should have 8 neighbours' do
         cell.neighbours.should have(8).items
       end
@@ -107,9 +107,38 @@ describe GameOfLife::Cell do
     end #}}}
   end
 
-  it 'Any live cell with fewer than two live neighbours dies, as if caused by under-population.'
-  it 'Any live cell with two or three live neighbours lives on to the next generation.'
-  it 'Any live cell with more than three live neighbours dies, as if by overcrowding.'
-  it 'Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.'
+  context 'cell should be uniq object on a board' do
+
+    it 'should not be allowed to create object directly' do
+      expect {
+        described_class.new(1, 2, board)
+      }.to raise_error(NoMethodError)
+    end
+  end
+
+  context 'Population controll' do
+    # [0,0], [1,0], [2,0], [3,0], [4,0]
+    # [0,1], [1,1], [2,1], [3,1], [4,1]
+    # [0,2], [1,2], [xxx], [3,2], [4,2]
+    # [0,3], [1,3], [2,3], [3,3], [4,3]
+    # [0,4], [1,4], [2,4], [3,4], [4,4]
+    # [0,5], [1,5], [2,5], [3,5], [4,5]
+    it 'Any live cell with fewer than two live neighbours dies, as if caused by under-population.' do
+      cell = described_class.find(2, 2, board)
+      cell.should be_will_die
+    end
+
+    it 'Any live cell with two or three live neighbours lives on to the next generation.' do
+      cell = described_class.find(2, 2, board)
+      live_neighbour_1 = described_class.find(1, 1, board)
+      live_neighbour_2 = described_class.find(2, 1, board)
+      live_neighbour_1.live!
+      live_neighbour_2.live!
+      cell.should be_will_live
+    end
+
+    it 'Any live cell with more than three live neighbours dies, as if by overcrowding.'
+    it 'Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.'
+  end
 
 end
