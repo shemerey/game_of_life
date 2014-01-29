@@ -13,6 +13,14 @@ describe GameOfLife::Cell do
     cell.y.should == 20
   end
 
+  it 'become a dead cell if we kill it' do
+    subject.live!
+
+    expect {
+      subject.kill!
+    }.to change { subject.live? }.from(true).to(false)
+  end
+
   it 'Any live cell with fewer than two live neighbours dies, as if caused by under-population.'
   it 'Any live cell with two or three live neighbours lives on to the next generation.'
   it 'Any live cell with more than three live neighbours dies, as if by overcrowding.'

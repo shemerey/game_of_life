@@ -1,10 +1,18 @@
 require 'all'
 
 class GameOfLife::Cell
-  attr_accessor :x, :y
+  attr_accessor :x, :y, :status
 
-  def initialize(x, y)
-    self.x, self.y = x, y
+  def initialize(x, y, status = :dead)
+    self.x, self.y, self.status = x, y, status
+  end
+
+  def live!
+    self.status = :live
+  end
+
+  def kill!
+    self.status = :dead
   end
 
   def live?
@@ -12,6 +20,6 @@ class GameOfLife::Cell
   end
 
   def dead?
-    true
+    :dead == self.status
   end
 end
