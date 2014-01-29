@@ -45,11 +45,11 @@ class GameOfLife::Cell
   end
 
   def will_live?
-    (2..3).include?(neighbours.count {|neighbour| neighbour.live? })
+    (2..3).include?(neighbours.count(&:live?))
   end
 
   def will_die?
-    neighbours.count {|neighbour| neighbour.live? } < 2
+    neighbours.count(&:live?) < 2
   end
 
   private
