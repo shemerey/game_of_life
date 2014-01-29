@@ -48,16 +48,14 @@ class GameOfLife::Cell
 
   def will_live?
     live_neignbourse = neighbours.count(&:live?)
-    dead_neignbourse = neighbours.count(&:dead?)
 
     if live?
-      return false if live_neignbourse < 2
-      return true if (2..3).cover?(live_neignbourse)
-      return false if live_neignbourse > 3
+      return true if (live_neignbourse == 2 || live_neignbourse == 3)
     else
-      return false if neighbours.count(&:live?) < 2
       return true if live_neignbourse == 3
     end
+
+    false
   end
 
   def will_die?
