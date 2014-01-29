@@ -40,25 +40,27 @@ describe GameOfLife::Cell do
 
 
   context 'neighbours' do
-    context '#cell with all neighbours' do #{{{
-      let(:cell) { described_class.new(2,2, board) }
+    context '#cell on edge line' do #{{{
 
-      # [0,0], [1,0], [2,0], [3,0], [4,0]
+      # [0,0], [1,0], [xxx], [3,0], [4,0]
       # [0,1], [1,1], [2,1], [3,1], [4,1]
-      # [0,2], [1,2], [xxx], [3,2], [4,2]
-      # [0,3], [1,3], [2,3], [3,3], [4,3]
+      # [0,2], [1,2], [2,2], [3,2], [4,2]
+      # [xxx], [1,3], [2,3], [3,3], [xxx]
       # [0,4], [1,4], [2,4], [3,4], [4,4]
-      # [0,5], [1,5], [2,5], [3,5], [4,5]
-      it 'should have 8 neighbours' do
-        cell.neighbours.should have(8).items
-      end
+      # [0,5], [1,5], [xxx], [3,5], [4,5]
+      let(:top) { described_class.new(2,0, board) }
+      let(:right) { described_class.new(4,3, board) }
+      let(:bottom) { described_class.new(2,5, board) }
+      let(:left) { described_class.new(0,3, board) }
+      let(:corner_cels) { [top, left, bottom, right] }
 
-      it 'should have cells as a neighbors' do
-        cell.neighbours.each do |neighbour|
-          neighbour.should be_instance_of(described_class)
+      it 'all edge line cells should have 5 neighbours' do
+        corner_cels.each do |cell|
+          cell.neighbours.should have(5).items
         end
       end
     end #}}}
+
     context '#corner cells should have 3 neighbours' do #{{{
       let(:left_top) { described_class.new(0,0, board) }
       let(:right_top) { described_class.new(4,0, board) }
@@ -86,6 +88,7 @@ describe GameOfLife::Cell do
         end
       end
     end #}}}
+
     context '#cell with all neighbours' do #{{{
       let(:cell) { described_class.new(0,0, board) }
 
