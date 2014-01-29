@@ -14,4 +14,16 @@ class GameOfLife::Board
   def y
     height - 1
   end
+
+  def cells
+    @cells ||= begin
+                  cells = []
+                  (0..x).each do |x|
+                    (0..y).each do |y|
+                      cells << GameOfLife::Cell.find(x, y, self)
+                    end
+                  end
+                  cells
+                end
+  end
 end

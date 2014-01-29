@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe GameOfLife::Board do
-  let(:height) { 50 }
-  let(:width) { 40 }
+  let(:height) { 5 }
+  let(:width) { 4 }
   subject { described_class.new(width, height) }
 
   it 'should be 40x50 board by default' do
@@ -18,7 +18,13 @@ describe GameOfLife::Board do
     subject.y.should == height - 1
   end
 
-  it 'should know about all cells'
-end
+  it 'should know about all cells' do
+    subject.cells.should have(height * width).items
+  end
 
+  it 'should have only dead cells by default' do
+    subject.cells.any?(&:live?).should be_false
+    subject.cells.all?(&:dead?).should be_true
+  end
+end
 
