@@ -8,7 +8,16 @@ class GameOfLife::Cell
   end
 
   def neighbours
-    []
+    [
+     self.class.new(1,2),
+     self.class.new(1,2),
+     self.class.new(1,2),
+     self.class.new(1,2),
+     self.class.new(1,2),
+     self.class.new(1,2),
+     self.class.new(1,2),
+     self.class.new(1,2),
+    ]
   end
 
   def live!

@@ -7,6 +7,7 @@ describe GameOfLife::Board do
     subject.length.should == 50
   end
 
+  it 'should know about all cells'
 end
 
 

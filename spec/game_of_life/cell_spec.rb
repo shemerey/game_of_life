@@ -29,7 +29,20 @@ describe GameOfLife::Cell do
 
 
   context 'neighbours' do
-    xit 'should have neighbors' do
+    #
+    # [0,0], [1,0], [2,0], [3,0], [4,0]
+    # [0,1], [1,1], [2,1], [3,1], [4,1]
+    # [0,2], [1,2], [xxx], [3,2], [4,2]
+    # [0,3], [1,3], [2,3], [3,3], [4,3]
+    # [0,4], [1,4], [2,4], [3,4], [4,4]
+    # [0,5], [1,5], [2,5], [3,5], [4,5]
+    #
+    # [2,2] =>  [1,1], [2,1], [3,1], [3,2], [3,3], [2,3], [1,3], [1,2]
+    it 'should have 8 neighbours' do
+      described_class.new(2,2).neighbours.should have(8).items
+    end
+
+    it 'should have neighbors' do
       subject.neighbours.should be_instance_of(Array)
       subject.neighbours.should_not be_empty
     end
