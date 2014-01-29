@@ -4,10 +4,73 @@ lib = File.expand_path('../../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'game_of_life'
+require 'curses'
 
-game = GameOfLife.new(20, 50)
+game = GameOfLife.new(50, 50)
+
+class CliInterface
+  def initialize(game)
+    @game = game
+    Curses.init_screen()
+  end
+
+  def x
+    (Curses.cols - board.width) / 2
+  end
+
+  def y
+    (Curses.lines - board.height) / 2
+  end
+
+  def window
+    @window ||= begin
+                  win = Curses::Window.new(board.height + 1, board.width + 1, y, x)
+                  win.box(?|, ?-)
+                  win.refresh
+                  win
+                end
+  end
+
+  def draw
+
+    board.cells.each do |cell|
+      window.setpos(cell.x + 1 , cell.y+ 1)
+      window.addstr('X')
+      window.refresh
+      sleep 0.05
+    end
+
+   #  window.setpos(10,10)
+    # window << 'Hi'
+    # window.refresh
+    # sleep 0.5
+
+    # my_str = "LOOK! PONIES!"
+    # win = window.subwin( 6, my_str.length + 6,
+    #                   (Curses.lines - 6) / 2,
+    #                   (Curses.cols - (my_str.length + 6)) / 2 )
+    # win.setpos(2,3)
+    # win.addstr(my_str)
+    #
+    # # or even
+    # win << "\nORLY"
+    # win << "\nYES!! " + my_str
+    #
+    # win.refresh
+    # win.puts 'aaaaaa'
+    # win.getch
+    # win.close
+    #
+  end
+
+  def board
+    @game.board
+  end
+end
+
+interface = CliInterface.new(game)
 
 while not game.over?
-  game.board.draw
+  interface.draw
 end
 

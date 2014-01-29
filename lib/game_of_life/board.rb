@@ -4,7 +4,7 @@ class GameOfLife
   class Board
     attr_reader :width, :height
 
-    def initialize(width = 40, height = 50)
+    def initialize(width = 90, height = 50)
       @width, @height = width, height
     end
 
@@ -26,10 +26,6 @@ class GameOfLife
                    end
                    cells
                  end
-    end
-
-    def draw
-
     end
   end
 end
