@@ -26,10 +26,12 @@ class GameOfLife::Cell
 
   def live!
     self.status = :live
+    self
   end
 
   def kill!
     self.status = :dead
+    self
   end
 
   def live?

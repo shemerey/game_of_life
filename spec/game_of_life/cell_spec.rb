@@ -116,28 +116,34 @@ describe GameOfLife::Cell do
     end
   end
 
+  # [0,0], [1,0], [2,0], [3,0], [4,0]
+  # [0,1], [1,1], [2,1], [3,1], [4,1]
+  # [0,2], [1,2], [xxx], [3,2], [4,2]
+  # [0,3], [1,3], [2,3], [3,3], [4,3]
+  # [0,4], [1,4], [2,4], [3,4], [4,4]
+  # [0,5], [1,5], [2,5], [3,5], [4,5]
   context 'Population controll' do
-    # [0,0], [1,0], [2,0], [3,0], [4,0]
-    # [0,1], [1,1], [2,1], [3,1], [4,1]
-    # [0,2], [1,2], [xxx], [3,2], [4,2]
-    # [0,3], [1,3], [2,3], [3,3], [4,3]
-    # [0,4], [1,4], [2,4], [3,4], [4,4]
-    # [0,5], [1,5], [2,5], [3,5], [4,5]
     it 'Any live cell with fewer than two live neighbours dies, as if caused by under-population.' do
-      cell = described_class.find(2, 2, board)
+      cell = described_class.find(2, 2, board).live!
       cell.should be_will_die
+      cell.should_not be_will_live
     end
 
     it 'Any live cell with two or three live neighbours lives on to the next generation.' do
       cell = described_class.find(2, 2, board)
-      live_neighbour_1 = described_class.find(1, 1, board)
-      live_neighbour_2 = described_class.find(2, 1, board)
-      live_neighbour_1.live!
-      live_neighbour_2.live!
+      described_class.find(1, 1, board).live!
+      described_class.find(2, 1, board).live!
       cell.should be_will_live
+      cell.should_not be_will_die
     end
 
-    it 'Any live cell with more than three live neighbours dies, as if by overcrowding.'
+    it 'Any live cell with more than three live neighbours dies, as if by overcrowding.' do
+      cell = described_class.find(2, 2, board)
+      described_class.find(1, 1, board).live!
+      described_class.find(2, 1, board).live!
+      cell.should be_will_live
+      cell.should_not be_will_die
+    end
     it 'Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.'
   end
 
