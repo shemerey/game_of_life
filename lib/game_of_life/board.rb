@@ -1,10 +1,10 @@
 require 'all'
 
 class GameOfLife::Board
-  attr_reader :width, :length
+  attr_reader :width, :height
 
-  def initialize(width = 40, length = 50)
-    @width, @length = width, length
+  def initialize(width = 40, height = 50)
+    @width, @height = width, height
   end
 
   def x
@@ -12,6 +12,6 @@ class GameOfLife::Board
   end
 
   def y
-    length - 1
+    height - 1
   end
 end
