@@ -8,7 +8,12 @@ class GameOfLife::Cell
   end
 
   def neighbours
-    (top_side_neighbours + right_side_neighbours + bottom_side_neighbours + left_side_neighbours).uniq do |cell|
+    (
+      top_side_neighbours +
+      right_side_neighbours +
+      bottom_side_neighbours +
+      left_side_neighbours
+    ).uniq do |cell|
       [cell.x, cell.y]
     end
   end
