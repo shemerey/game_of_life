@@ -68,7 +68,7 @@ class NcursesInterface
   end
 
   def cell_char(cell)
-    cell.live? ? 'X' : ' '
+    cell.live? ? "\u{25CE}": " "
   end
 
   def board
