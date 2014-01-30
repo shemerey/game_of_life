@@ -1,79 +1,85 @@
 #!/usr/bin/env ruby
+# vim:fen:fdm=marker:fmr={{{,}}}:fdl=0:fdc=1:ts=2:sw=2:sts=2:nu
 
 lib = File.expand_path('../../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'game_of_life'
-require 'curses'
+require 'ncursesw'
 
 game = GameOfLife.new(20, 10)
 
-GameOfLife::Cell.find(1, 1, game.board).live!
-GameOfLife::Cell.find(2, 1, game.board).live!
-GameOfLife::Cell.find(2, 2, game.board).live!
+GameOfLife::Cell.find(1, 0, game.board).live!
+GameOfLife::Cell.find(1, 8, game.board).live!
+GameOfLife::Cell.find(5, 4, game.board).live!
+GameOfLife::Cell.find(6, 5, game.board).live!
+GameOfLife::Cell.find(2, 4, game.board).live!
+GameOfLife::Cell.find(4, 3, game.board).live!
+GameOfLife::Cell.find(2, 4, game.board).live!
 GameOfLife::Cell.find(1, 2, game.board).live!
+GameOfLife::Cell.find(8, 7, game.board).live!
+GameOfLife::Cell.find(7, 7, game.board).live!
+GameOfLife::Cell.find(7, 0, game.board).live!
+GameOfLife::Cell.find(5, 2, game.board).live!
+GameOfLife::Cell.find(7, 2, game.board).live!
+GameOfLife::Cell.find(2, 1, game.board).live!
+GameOfLife::Cell.find(9, 5, game.board).live!
+GameOfLife::Cell.find(1, 6, game.board).live!
+GameOfLife::Cell.find(4, 6, game.board).live!
+GameOfLife::Cell.find(3, 2, game.board).live!
+GameOfLife::Cell.find(2, 1, game.board).live!
+GameOfLife::Cell.find(0, 4, game.board).live!
 
-class CliInterface
+class NcursesInterface
   def initialize(game)
     @game = game
+    Ncurses.initscr
   end
 
   def left
-    (Curses.cols - board.width) / 2
+    (Ncurses.COLS - board.width) / 2
   end
 
   def top
-    (Curses.lines - board.height) / 2
+    (Ncurses.LINES - board.height) / 2
   end
 
   def window
-    @window ||= begin
-                  Curses.init_screen()
-                  win = Curses::Window.new(board.height, board.width, top, left)
-                  win.box(?#, ?#)
-                  win.refresh
-                  win
-                end
+    @window ||= Ncurses::WINDOW.new(board.height, board.width, top, left)
   end
 
   def draw
-    lines.each do |index, line|
-      line.each do |cell|
-        draw_cell(cell)
-        window.refresh
-      end
+    to_live, to_die = [], []
+
+    board.cells.each do |cell|
+      window.move(cell.x, cell.y)
+      window.addstr(cell_char(cell))
+
+      to_live << cell if cell.will_live?
+      to_die << cell if cell.will_die?
     end
-    sleep 0.005
+
+    to_live.map(&:live!)
+    to_die.map(&:kill!)
+
+    window.noutrefresh() # copy window to virtual screen, don't update real screen
+    Ncurses.doupdate() # update read screen
+    sleep 1
   end
 
   def cell_char(cell)
     cell.live? ? 'X' : ' '
   end
 
-  def draw_cell(cell)
-    window.addch(cell_char(cell))
-  end
-
   def board
     @game.board
   end
-
-  def lines
-    @lines ||= begin
-                 lines = {}
-                 board.cells.each do |cell|
-                   lines[cell.y] ||= []
-                   lines[cell.y][cell.x] = cell
-                 end
-                 lines
-               end
-  end
-
 end
 
-interface = CliInterface.new(game)
+interface = NcursesInterface.new(game)
 
 while not game.over?
   interface.draw
 end
+
 
