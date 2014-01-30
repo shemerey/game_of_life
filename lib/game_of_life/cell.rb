@@ -10,9 +10,20 @@ class GameOfLife
     end
 
     def initialize(x, y, board)
-      self.status, self.x, self.y, @board = :dead, x, y, board
+      self.status = :dead
+      self.x = x
+      self.y = y
+      @board = board
     end
     private_class_method :new
+
+    def x
+      @x
+    end
+
+    def y
+      @y
+    end
 
     def neighbours
       (

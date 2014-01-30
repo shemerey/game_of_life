@@ -6,66 +6,69 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'game_of_life'
 require 'curses'
 
-game = GameOfLife.new(50, 50)
+game = GameOfLife.new(20, 10)
+
+GameOfLife::Cell.find(1, 1, game.board).live!
+GameOfLife::Cell.find(2, 1, game.board).live!
+GameOfLife::Cell.find(2, 2, game.board).live!
+GameOfLife::Cell.find(1, 2, game.board).live!
 
 class CliInterface
   def initialize(game)
     @game = game
-    Curses.init_screen()
   end
 
-  def x
+  def left
     (Curses.cols - board.width) / 2
   end
 
-  def y
+  def top
     (Curses.lines - board.height) / 2
   end
 
   def window
     @window ||= begin
-                  win = Curses::Window.new(board.height + 1, board.width + 1, y, x)
-                  win.box(?|, ?-)
+                  Curses.init_screen()
+                  win = Curses::Window.new(board.height, board.width, top, left)
+                  win.box(?#, ?#)
                   win.refresh
                   win
                 end
   end
 
   def draw
-
-    board.cells.each do |cell|
-      window.setpos(cell.x + 1 , cell.y+ 1)
-      window.addstr('X')
-      window.refresh
-      sleep 0.05
+    lines.each do |index, line|
+      line.each do |cell|
+        draw_cell(cell)
+        window.refresh
+      end
     end
+    sleep 0.005
+  end
 
-   #  window.setpos(10,10)
-    # window << 'Hi'
-    # window.refresh
-    # sleep 0.5
+  def cell_char(cell)
+    cell.live? ? 'X' : ' '
+  end
 
-    # my_str = "LOOK! PONIES!"
-    # win = window.subwin( 6, my_str.length + 6,
-    #                   (Curses.lines - 6) / 2,
-    #                   (Curses.cols - (my_str.length + 6)) / 2 )
-    # win.setpos(2,3)
-    # win.addstr(my_str)
-    #
-    # # or even
-    # win << "\nORLY"
-    # win << "\nYES!! " + my_str
-    #
-    # win.refresh
-    # win.puts 'aaaaaa'
-    # win.getch
-    # win.close
-    #
+  def draw_cell(cell)
+    window.addch(cell_char(cell))
   end
 
   def board
     @game.board
   end
+
+  def lines
+    @lines ||= begin
+                 lines = {}
+                 board.cells.each do |cell|
+                   lines[cell.y] ||= []
+                   lines[cell.y][cell.x] = cell
+                 end
+                 lines
+               end
+  end
+
 end
 
 interface = CliInterface.new(game)
