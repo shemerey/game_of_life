@@ -5,11 +5,11 @@ lib = File.expand_path('../../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'game_of_life'
-require 'ncursesw'
+require 'ncurses'
 
 game = GameOfLife.new(20, 10)
 
-GameOfLife::Cell.find(1, 0, game.board).live!
+GameOfLife::Cell.find(1, 0, game.board).live!# {{{
 GameOfLife::Cell.find(1, 8, game.board).live!
 GameOfLife::Cell.find(5, 4, game.board).live!
 GameOfLife::Cell.find(6, 5, game.board).live!
@@ -28,7 +28,7 @@ GameOfLife::Cell.find(1, 6, game.board).live!
 GameOfLife::Cell.find(4, 6, game.board).live!
 GameOfLife::Cell.find(3, 2, game.board).live!
 GameOfLife::Cell.find(2, 1, game.board).live!
-GameOfLife::Cell.find(0, 4, game.board).live!
+GameOfLife::Cell.find(0, 4, game.board).live!# }}}
 
 class NcursesInterface
   def initialize(game)
@@ -74,6 +74,18 @@ class NcursesInterface
   def board
     @game.board
   end
+
+  # def on_exit
+  #   Ncurses.echo
+  #   Ncurses.nocbreak
+  #   Ncurses.nl
+  #   Ncurses.endwin
+  # end
+end
+
+at_exit do
+  NcursesInterface.on_exit
+  exit
 end
 
 interface = NcursesInterface.new(game)
