@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.executables << 'game_of_life'
 
-  spec.add_dependency 'ncursesw'
+  spec.add_dependency 'ncurses-ruby'
 
   spec.add_development_dependency "bundler", "~> 1.5"
   spec.add_development_dependency "rake"
