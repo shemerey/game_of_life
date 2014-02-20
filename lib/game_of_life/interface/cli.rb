@@ -39,7 +39,7 @@ class GameOfLife
           to_live, to_die = [], []
 
           board.cells.each do |cell|
-            window.move(cell.x, cell.y)
+            window.move(cell.x - 2, cell.y)
             window.addstr(cell_char(cell))
 
             to_live << cell if cell.will_live?
@@ -49,6 +49,7 @@ class GameOfLife
           to_live.map(&:live!)
           to_die.map(&:kill!)
           sleep 0.5
+
         else
           window.move(window_height/2, window_width/2)
           window.addstr("press 'q' to exit")
@@ -57,7 +58,7 @@ class GameOfLife
       end
 
       def cell_char(cell)
-        cell.live? ? "\u{25CE}": " "
+        cell.live? ? "x ": "- "
       end
 
       def board
