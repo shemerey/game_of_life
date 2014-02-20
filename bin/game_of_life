@@ -30,6 +30,7 @@ GameOfLife::Cell.find(3, 2, game.board).live!
 GameOfLife::Cell.find(2, 1, game.board).live!
 GameOfLife::Cell.find(0, 4, game.board).live!# }}}
 
+
 interface = GameOfLife::Interface::Cli.new(game)
 begin
   interface.draw

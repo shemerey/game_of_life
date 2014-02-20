@@ -17,20 +17,21 @@ class GameOfLife
         Ncurses.stdscr.nodelay(true)      # get nonblocked user input
       end
 
+      def left
+        (Ncurses.COLS - board.width) / 2
+      end
+
+      def top
+        (Ncurses.LINES - board.height) / 2
+      end
+
       def window
-        Ncurses.stdscr
-      end
-
-      def window_width
-        Ncurses.COLS
-      end
-
-      def window_height
-        Ncurses.LINES
+        @window ||= Ncurses::WINDOW.new(board.height, board.width, top, left)
       end
 
       def refresh
-        Ncurses.stdscr
+         window.noutrefresh() # copy window to virtual screen, don't update real screen
+         Ncurses.doupdate()   # update read screen
       end
 
       def draw
