@@ -8,8 +8,8 @@ require 'game_of_life'
 require 'ncurses'
 
 width = 20
-height = 10
-game = GameOfLife.new(width, height)
+height = 20
+game = GameOfLife.new(height, width)
 
 (0..width).each do |x|
   (0..height).each do |y|

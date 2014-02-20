@@ -26,12 +26,11 @@ class GameOfLife
       end
 
       def window
-        @window ||= Ncurses::WINDOW.new(board.height, board.width, top, left)
+        Ncurses.stdscr
       end
 
       def refresh
-         window.noutrefresh() # copy window to virtual screen, don't update real screen
-         Ncurses.doupdate()   # update read screen
+         Ncurses.refresh
       end
 
       def draw
@@ -39,7 +38,7 @@ class GameOfLife
           to_live, to_die = [], []
 
           board.cells.each do |cell|
-            window.move(cell.x - 2, cell.y)
+            window.move(cell.x + 1, cell.y + 2)
             window.addstr(cell_char(cell))
 
             to_live << cell if cell.will_live?
