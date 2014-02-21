@@ -17,14 +17,6 @@ class GameOfLife
         Ncurses.stdscr.nodelay(true)      # get nonblocked user input
       end
 
-      def left
-        (Ncurses.COLS - board.width) / 2
-      end
-
-      def top
-        (Ncurses.LINES - board.height) / 2
-      end
-
       def window
         Ncurses.stdscr
       end
@@ -33,31 +25,38 @@ class GameOfLife
          Ncurses.refresh
       end
 
+      def y_margin
+        3
+      end
+
+      def x_margin
+        6
+      end
+
       def draw
-        if true
-          to_live, to_die = [], []
+        to_live, to_die = [], []
 
-          board.cells.each do |cell|
-            window.move(cell.x + 1, cell.y + 2)
-            window.addstr(cell_char(cell))
+        window.box(0, 0)
+        window.move(0, 0)
+        window.addstr("Press 'q' to exit")
 
-            to_live << cell if cell.will_live?
-            to_die << cell if cell.will_die?
-          end
+        board.cells.each do |cell|
+          window.move(cell.y + y_margin, (cell.x * 2) + x_margin)
+          window.addstr(cell_char(cell))
 
-          to_live.map(&:live!)
-          to_die.map(&:kill!)
-          sleep 0.5
-
-        else
-          window.move(window_height/2, window_width/2)
-          window.addstr("press 'q' to exit")
+          to_live << cell if cell.will_live?
+          to_die << cell if cell.will_die?
         end
+
+        to_live.map(&:live!)
+        to_die.map(&:kill!)
+        sleep 0.3
         refresh
       end
 
       def cell_char(cell)
-        cell.live? ? "x ": "- "
+        cell.live? ? "\u{1f4d7} ": "  "
+        # http://en.wikipedia.org/wiki/Box-drawing_character
       end
 
       def board

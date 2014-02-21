@@ -6,9 +6,12 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'game_of_life'
 require 'ncurses'
+require 'io/console'
 
-width = 20
-height = 20
+width, height = IO.console.winsize
+height = (height/2.5).round
+width = width - 6
+
 game = GameOfLife.new(height, width)
 
 (0..width).each do |x|
@@ -16,28 +19,6 @@ game = GameOfLife.new(height, width)
     GameOfLife::Cell.find(x, y, game.board).live! if rand(width+height).even?
   end
 end
-
-# GameOfLife::Cell.find(1, 0, game.board).live!# {{{
-# GameOfLife::Cell.find(1, 8, game.board).live!
-# GameOfLife::Cell.find(5, 4, game.board).live!
-# GameOfLife::Cell.find(6, 5, game.board).live!
-# GameOfLife::Cell.find(2, 4, game.board).live!
-# GameOfLife::Cell.find(4, 3, game.board).live!
-# GameOfLife::Cell.find(2, 4, game.board).live!
-# GameOfLife::Cell.find(1, 2, game.board).live!
-# GameOfLife::Cell.find(8, 7, game.board).live!
-# GameOfLife::Cell.find(7, 7, game.board).live!
-# GameOfLife::Cell.find(7, 0, game.board).live!
-# GameOfLife::Cell.find(5, 2, game.board).live!
-# GameOfLife::Cell.find(7, 2, game.board).live!
-# GameOfLife::Cell.find(2, 1, game.board).live!
-# GameOfLife::Cell.find(9, 5, game.board).live!
-# GameOfLife::Cell.find(1, 6, game.board).live!
-# GameOfLife::Cell.find(4, 6, game.board).live!
-# GameOfLife::Cell.find(3, 2, game.board).live!
-# GameOfLife::Cell.find(2, 1, game.board).live!
-# GameOfLife::Cell.find(0, 4, game.board).live!# }}}
-#
 
 interface = GameOfLife::Interface::Cli.new(game)
 begin
