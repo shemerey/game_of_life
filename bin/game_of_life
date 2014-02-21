@@ -9,7 +9,7 @@ require 'ncurses'
 require 'io/console'
 
 width, height = IO.console.winsize
-height = (height/2.5).round
+height = (height/2.5).round - 6
 width = width - 6
 
 game = GameOfLife.new(height, width)
